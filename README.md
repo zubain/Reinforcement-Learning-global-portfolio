@@ -21,12 +21,7 @@ PLEASE NOTE: The raw data for this thesis is not available due to copyright. Fee
 
 
 References: 
-@article{finrl2020,
-    author  = {Liu, Xiao-Yang and Yang, Hongyang and Chen, Qian and Zhang, Runjia and Yang, Liuqing and Xiao, Bowen and Wang, Christina Dan},
-    journal = {Deep RL Workshop, NeurIPS 2020},
-    title   = {FinRL: A Deep Reinforcement Learning Library for Automated Stock Trading in Quantitative Finance},
-    url     = {https://arxiv.org/pdf/2011.09607.pdf},
-    year    = {2020}
-}
+Liu, X.-Y., Yang, H., Chen, Q., Zhang, R., Yang, L., Xiao, B., & Wang, C. (2020). FinRL: A Deep Reinforcement Learning Library for Automated Stock Trading in Quantitative Fi- nance. SSRN Electronic Journal.
+https://doi.org/10.2139/ssrn.3737859
 
 Please also note that the current version of stable baselines used here is based on Tensorflow 1.1X. A migration of code to Stable baselines 3.0 using PyTorch may be required in the near future. Using stable baselines with version 2.0 of Tensorflow is still under development. Python 3.6 and under can be used to run the code. 
