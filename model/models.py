@@ -198,14 +198,16 @@ def run_strategy(df, unique_trade_date, rebalance_window, validation_window, dat
         ############## Environment Setup ends ##############
 
         ############## Training and Validation starts ##############
-        print("======Model training from: " & data_start_date & " to ",
+        print("======Model training from: " + data_start_date + " to ",
               unique_trade_date[i - rebalance_window - validation_window])
         # print("training: ",len(data_split(df, start=20090000, end=test.datadate.unique()[i-rebalance_window]) ))
         # print("==============Model Training===========")
 
-        print("======" & model_type & " Training========")
+        print("======" + model_type + " Training========")
         if (model_type=="A2C"):
-            model = train_A2C(env_train, model_name="A2C_Z_{}".format(i), timesteps=timesteps)
+            model_a2c = train_A2C(env_train, model_name="A2C_Z_{}".format(i),
+                              timesteps=timesteps, policy_type='MlpPolicy')
+            
             print("======A2C Validation from: ", unique_trade_date[i - rebalance_window - validation_window], "to ",
                   unique_trade_date[i - rebalance_window])  
             DRL_validation(model=model_a2c, test_data=validation, test_env=env_val, test_obs=obs_val)
@@ -217,7 +219,9 @@ def run_strategy(df, unique_trade_date, rebalance_window, validation_window, dat
         
         if (model_type=="PPO"):
             print("======PPO Training========")
-            model_ppo = train_PPO(env_train, model_name="PPO_Z_{}".format(i), timesteps=timesteps)
+            model_ppo = train_PPO(env_train, model_name="PPO_Z_{}".format(i),
+                                  timesteps=timesteps, policy_type='MlpPolicy')
+            
             print("======PPO Validation from: ", unique_trade_date[i - rebalance_window - validation_window], "to ",
                   unique_trade_date[i - rebalance_window])  
             DRL_validation(model=model_ppo, test_data=validation, test_env=env_val, test_obs=obs_val)
@@ -229,7 +233,8 @@ def run_strategy(df, unique_trade_date, rebalance_window, validation_window, dat
 
         if (model_type=="DDPG"):
             print("======DDPG Training========")
-            model_ddpg = train_DDPG(env_train, model_name="DDPG_10k_dow_{}".format(i), timesteps=timesteps)
+            model_ddpg = train_DDPG(env_train, model_name="DDPG_10k_dow_{}".format(i),
+                                    timesteps=timesteps, policy_type='MlpPolicy')
             print("======DDPG Validation from: ", unique_trade_date[i - rebalance_window - validation_window], "to ",
                   unique_trade_date[i - rebalance_window])
             DRL_validation(model=model_ddpg, test_data=validation, test_env=env_val, test_obs=obs_val)
