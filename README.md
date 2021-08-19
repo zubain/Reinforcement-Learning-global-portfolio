@@ -11,3 +11,6 @@ The structure of this repository is as follows:
 - The 'env' folder consists of the training, validation and testing environments. The run_strategy function in models.py calls upon the training environment, the validation function utilizes the validation environment and the prediction environment makes use of the trading environment respetively. The environments are defined and utilized in a very similar manner to the FinRL library
 - The 'Trained models' folder contains specific models that yielded the results explained in the thesis
 - The 'Results' folder contains necessary raw outputs for specific models whose outputs are discussed in the thesis. The function 'prep_result_data' in Utilities.ipynb is used to prepare the output from the raw results. 
+
+
+A formal pacakge requirement file, and instructions to run the code will be added soon. For the moment, the code requires the following packages: numpy, pandas, os, time, stable-baselines and its dependencies, gym and its dependencies.  
