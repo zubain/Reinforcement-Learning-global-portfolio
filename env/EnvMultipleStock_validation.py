@@ -1,3 +1,7 @@
+# This code has been inspired by the FinRL library, with modifications made to tailor the code
+
+########################################################################################
+# Loading required packages
 import numpy as np
 import pandas as pd
 from gym.utils import seeding
@@ -6,19 +10,28 @@ from gym import spaces
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pickle
+########################################################################################
 
-# shares normalization factor
-# 100 shares per trade
+########################################################################################
+# Setting parameters
+
+# Max shares per trade is a normalization factor. The action space is limited to [-1, 1]
+# Hence this factor translates the action space to the number of shares for each action
+# 200 shares per trade is finally chosen
 HMAX_NORMALIZE = 200
-# initial amount of money we have in our account
+
+# Initial amount of money given to the agent
 INITIAL_ACCOUNT_BALANCE=1000000
-# total number of stocks in our portfolio
+
+# Total number of stocks allowed in the portfolio
 STOCK_DIM = 13
-# transaction fee: 1/1000 reasonable percentage
+
+# Transaction fee: 0.05% is finally chosen
 TRANSACTION_FEE_PERCENT = 0.0005
 
 REWARD_SCALING = 1e-4
+
+########################################################################################
 
 class StockEnvValidation(gym.Env):
     """A stock trading environment for OpenAI gym"""
@@ -29,38 +42,38 @@ class StockEnvValidation(gym.Env):
                  iteration=''):
         self.day = day
         self.df = df
-        # action_space normalization and shape is STOCK_DIM
+        ## action_space normalization and shape is STOCK_DIM. The action space is compressed to [-1,1]
         self.action_space = spaces.Box(low = -1, high = 1,shape = (STOCK_DIM,)) 
-        # Shape = 181: [Current Balance]+[prices 1-30]+[owned shares 1-30] 
-        # +[macd 1-30]+ [rsi 1-30] + [cci 1-30] + [adx 1-30]
+        # Observation space comprises of the current portfolio balance + closing prices from the baskets 1-13 + 
+        # number of shares owned per basket 1-13 + MACD per basket 1-13 + RSI per basket 1-13 + Volume per basket 1-13 +
+        # Bollinger bands per basket 1-13 + VIX prices copied over all the 13 baskets per day 
         self.observation_space = spaces.Box(low=0, high=np.inf, shape = (STOCK_DIM*7 + 1,))
-        
-#         self.turbulence_threshold = turbulence_threshold
         # load data from a pandas dataframe
         self.data = self.df.loc[self.day,:]
+        # By default, the terminal state is False. It converts to True at the last iteration
+
         self.terminal = False     
-    
-        # initalize state
+        # initalize states as described in the observation space
         self.state = [INITIAL_ACCOUNT_BALANCE] + \
                       self.data.close.values.tolist() + \
                       [0]*STOCK_DIM + \
                       self.data.macd.values.tolist() + \
-                      self.data.rsi.values.tolist() + \
+                      self.data.rsi.values.tolist()  + \
                       self.data.volume.values.tolist() + \
                       self.data.boll.values.tolist() + \
                       self.data.turbulence.values.tolist()
-        
+
         # initialize reward
         self.reward = 0
 #         self.turbulence = 0
         self.cost = 0
         self.trades = 0
-        # memorize all the total balance change
+        # Store the initial account balance and initial reward balance
         self.asset_memory = [INITIAL_ACCOUNT_BALANCE]
         self.rewards_memory = []
         #self.reset()
         self._seed()
-        
+        self.model_name=model_name        
         self.iteration=iteration
 
 
